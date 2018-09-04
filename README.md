@@ -1,27 +1,20 @@
-Welcome to the Glitch BETA
-==========================
+This is a simple playground to experiment with content for the codelab...
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+Legit work will evolve into other folders and playground may die off in favor of branching.
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+### Local Development
 
-Find out more [about Glitch](https://glitch.com/about).
+We will be working with static files, so you don't need a local webserver,
+but if you would like to use one *(for live-reload on file changes)* feel free.
 
+One a simple option is [devd](https://github.com/cortesi/devd)
+which is easy to
+[install on most OSes](https://github.com/cortesi/devd/releases/tag/v0.8)
+*(download and move into your `$PATH`)*.
 
-Your Project
-------------
+Then it's as simple as:
 
-On the front-end,
-- edit `public/client.js`, `public/style.css` and `views/index.html`
-- drag in `assets`, like images or music, to add them to your project
-
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
-
-
-Made by [Fog Creek](https://fogcreek.com/)
--------------------
-
-\ ゜o゜)ノ
+```sh
+$ cd pathto/00-sandbox
+$ devd -ol .
+```
