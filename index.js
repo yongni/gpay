@@ -39,115 +39,21 @@
 let selectedShirt;
 
 /**
- * Google Pay API Configuration
+ * TODO Add logic to handle integration of Google Pay: onGooglePayLoaded()
  */
-const tokenizationSpecification = {
-  type: 'PAYMENT_GATEWAY',
-  parameters: {
-    gateway: 'example',
-    gatewayMerchantId: 'gatewayMerchantId'
-  }
-};
 
-const cardPaymentMethod = {
-  type: 'CARD',
-  tokenizationSpecification: tokenizationSpecification,
-  parameters: {
-    allowedCardNetworks: ['VISA','MASTERCARD'],
-    allowedAuthMethods: ['PAN_ONLY','CRYPTOGRAM_3DS'],
-    billingAddressRequired: true,
-    billingAddressParameters: {
-      format: 'FULL',
-      phoneNumberRequired: true
-    }
-  }
-};
 
-const googlePayBaseConfiguration = {
-  apiVersion: 2,
-  apiVersionMinor: 0,
-  allowedPaymentMethods: [cardPaymentMethod]
-};
 
-/**
- * Defines and handles the main operations related to the integration of
- * Google Pay. This function is executed when the Google Pay library script has
- * finished loading.
- */
-function onGooglePayLoaded() {
 
-  const googlePayClient = new google.payments.api.PaymentsClient({
-    environment: 'TEST'
-  });
 
-  /**
-   * Handles the click of the button to pay with Google Pay. Takes
-   * care of defining the payment data request to be used in order to load
-   * the payments methods available to the user.
-   */
-  function onGooglePaymentsButtonClicked() {
 
-    const merchantInfo = {
-      merchantId: '01234567890123456789',
-      merchantName: 'Example Merchant Name'
-    };
 
-    const transactionInfo = {
-      totalPriceStatus: 'FINAL',
-      totalPrice: selectedShirt.price.toString(), 
-      currencyCode: 'USD'
-    };
 
-    const paymentDataRequest = Object.assign({
-      merchantInfo: merchantInfo,
-      transactionInfo: transactionInfo,
-    }, googlePayBaseConfiguration);
 
-    // Trigger to open the sheet with a list of payments method available
-    googlePayClient
-      .loadPaymentData(paymentDataRequest)
-      .then(function(paymentData) {
-        // Process result – processPaymentData(paymentData);
-        console.info('googlePayClient payment load success: ', paymentData);
-        window.location.hash = '#shop-success';
 
-      }).catch(function(error) {
-        // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
-        console.error('googlePayClient payment load failed: ', error);
-      });
-  }
 
-  /**
-   * Handles the creation of the button to pay with Google Pay.
-   * Once created, this button is appended to the DOM, under the element 
-   * 'buy-now'.
-   */
-  function createAndAddButton() {
 
-    const googlePayButton = googlePayClient.createButton({
-      // defaults to black if default or omitted
-      buttonColor: 'default',
-      // defaults to long if omitted
-      buttonType: 'long',
-      onClick: onGooglePaymentsButtonClicked
-    });
 
-    googlePayButton.setAttribute('id', 'google-pay-button');
-    domId('buy-now').appendChild(googlePayButton);
-  }
-
-  // Determine readiness to pay using Google Pay
-  googlePayClient.isReadyToPay(googlePayBaseConfiguration)
-    .then(function(response) {
-      if (response.result) {
-        createAndAddButton();
-      }
-    }).catch(function(error) {
-      console.error("googlePayClient is unable to pay", error);
-      // Did you get "Google Pay APIs should be called in secure context"?
-      // You need to be on SSL/TLS (a https:// server)
-    });
-}
 
 /**
  * Local cache.
