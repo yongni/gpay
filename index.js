@@ -65,21 +65,6 @@ function onGooglePayLoaded() {
   // 1. Instantiate the client using the 'TEST' environment.
   // 2. Call the isReadyToPay method passing in the necessary configuration.
 
-  googlePayClient = new google.payments.api.PaymentsClient({
-    environment: 'TEST'
-  });
-
-  // Determine readiness to pay using Google Pay
-  googlePayClient.isReadyToPay(googlePayBaseConfiguration)
-    .then(function(response) {
-      if (response.result) {
-        createAndAddButton();
-      }
-    }).catch(function(error) {
-      console.error("googlePayClient is unable to pay", error);
-      // Did you get "Google Pay APIs should be called in secure context"?
-      // You need to be on SSL/TLS (a https:// server)
-    });
 }
 
 /**
@@ -89,10 +74,11 @@ function onGooglePayLoaded() {
  */
 function createAndAddButton() {
 
-  // TODO: Create Google Pay button andd add it to the DOM
+  // TODO: Create Google Pay button andd add it to the DOM.
 
   // googlePayButton.setAttribute('id', 'google-pay-button');
   // domId('buy-now').appendChild(googlePayButton);
+  
 }
 
 /**
@@ -103,9 +89,9 @@ function createAndAddButton() {
 function onGooglePaymentsButtonClicked() {
   
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
-  // 1. Update the payment method created before to include a tokenization spec and other parameters
-  // 2. Add information about the transaction
-  // 3. Add information about the merchant
-  // 4. Call loadPaymentData
+  // 1. Update the card created before to include a tokenization spec and other parameters.
+  // 2. Add information about the transaction.
+  // 3. Add information about the merchant.
+  // 4. Call loadPaymentData.
 
 }
