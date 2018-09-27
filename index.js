@@ -76,6 +76,7 @@ function createAndAddButton() {
 
   // TODO: Create Google Pay button andd add it to the DOM.
 
+  // TODO: Add the button to the DOM
   // googlePayButton.setAttribute('id', 'google-pay-button');
   // domId('buy-now').appendChild(googlePayButton);
   
