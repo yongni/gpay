@@ -97,4 +97,7 @@ function onGooglePaymentsButtonClicked() {
 
 }
 
-function sendPayload
+function sendPayloadToProcessor(googlePayPayload) {
+  // Send a POST request to your processor with the payload
+  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server 
+}
