@@ -96,3 +96,5 @@ function onGooglePaymentsButtonClicked() {
   // 4. Call loadPaymentData.
 
 }
+
+function sendPayload
