@@ -63,6 +63,9 @@ function onGooglePayLoaded() {
   
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
+  googlePayClient = {
+    
+  }
   // 2. Call the isReadyToPay method passing in the necessary configuration.
 
 }
