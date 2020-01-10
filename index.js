@@ -63,10 +63,18 @@ function onGooglePayLoaded() {
   
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
-  googlePayClient = {
-    
-  }
+  googlePayClient = new google.payments.api.PaymentClient({
+    environment: 'TEST',
+  });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
+  googlePayClient.isReadyToPay(googlePayBAseConfiguration)
+    .then((response) => {
+    if (response.result) {
+      createAndAddButton();
+    } else {
+      alert('Unable to pay with GPay');
+    }  })
+    .catch(e => console.log(e));
 
 }
 
