@@ -66,7 +66,7 @@ function onGooglePayLoaded() {
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
     environment: "TEST",
-    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback }
+    paymentDataCallbacks: { onPaymentDataChanged: p => paymentDataCallback(p) }
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
   googlePayClient
