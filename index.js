@@ -78,6 +78,8 @@ function onGooglePayLoaded() {
     .catch(e => console.log(e));
 }
 
+const domId = id => document.getElementById(id);
+
 /**
  * Handles the creation of the button to pay with Google Pay.
  * Once created, this button is appended to the DOM, under the element
@@ -85,10 +87,12 @@ function onGooglePayLoaded() {
  */
 function createAndAddButton() {
   // TODO: Create Google Pay button andd add it to the DOM.
-  const googlePayButton = googlePayClient.createButton({onclick: onGooglePaymentsButtonClicked});
+  const googlePayButton = googlePayClient.createButton({
+    onclick: onGooglePaymentsButtonClicked
+  });
   // TODO: Add the button to the DOM
-  googlePayButton.setAttribute('id', 'google-pay-button');
-  domId('buy-now').appendChild(googlePayButton);
+  googlePayButton.setAttribute("id", "google-pay-button");
+  domId("buy-now").appendChild(googlePayButton);
 }
 
 /**
