@@ -140,6 +140,31 @@ function onGooglePaymentsButtonClicked() {
     merchantInfo: merchantInfo
   });
   // 4. Call loadPaymentData.
+  googlePayClient
+  .loadPaymentData(paymentDataRequest)
+  .then(function(paymentData) {
+    processPayment(paymentData);
+  }).catch(function(err) {
+    // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+  });
+}
+
+function processPayment(paymentData) {
+  // TODO: Send a POST request to your processor with the payload
+  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server 
+  // Sorry, this is out-of-scope for this codelab.
+  console.log(paymentData);
+  
+  return new Promise(function(resolve, reject) {
+    // @todo pass payment token to your gateway to process payment
+    const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+    console.log('mock send token ' + paymentToken + ' to payment processor');
+    setTimeout(function() {
+      console.log('mock response from processor');
+      alert('done');
+      resolve({});
+    }, 800);
+  });
 }
 
 function sendPayloadToProcessor(googlePayPayload) {
