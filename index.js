@@ -26,7 +26,7 @@
  * polymer, etc).
  */
 
-console.log('index loaded');
+console.log("index loaded");
 
 /**
  * Google Pay API Configuration
@@ -104,14 +104,41 @@ function onGooglePaymentsButtonClicked() {
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
   // 1. Update the card created before to include a tokenization spec and other parameters.
   const tokenizationSpecification = {
-  type: 'PAYMENT_GATEWAY',
-  parameters: {
-    gateway: 'example',
-    gatewayMerchantId: 'gatewayMerchantId'
-  }
-
+    type: "PAYMENT_GATEWAY",
+    parameters: {
+      gateway: "example",
+      gatewayMerchantId: "gatewayMerchantId"
+    }
+  };
+  const cardPaymentMethod = {
+    type: "CARD",
+    tokenizationSpecification: tokenizationSpecification,
+    parameters: {
+      allowedCardNetworks: ["VISA", "MASTERCARD"],
+      allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+      billingAddressRequired: true,
+      billingAddressParameters: {
+        format: "FULL",
+        phoneNumberRequired: true
+      }
+    }
+  };
   // 2. Add information about the transaction.
+  const transactionInfo = {
+    totalPriceStatus: "FINAL",
+    totalPrice: "123.45",
+    currencyCode: "USD"
+  };
   // 3. Add information about the merchant.
+  const merchantInfo = {
+    // merchantId: '01234567890123456789', Only in PRODUCTION
+    merchantName: "Example Merchant Name"
+  };
+  const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
+    allowedPaymentMethods: [cardPaymentMethod],
+    transactionInfo: transactionInfo,
+    merchantInfo: merchantInfo
+  });
   // 4. Call loadPaymentData.
 }
 
