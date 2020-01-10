@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-'use strict';
+"use strict";
 
 /**
- * @fileoverview This file supports the codelab for Google Pay: 
+ * @fileoverview This file supports the codelab for Google Pay:
  * Build a Fast Checkout Experience on the Web with Google Pay, representing
  * a sample t-shirt store that suggests a new t-shirt on every load and uses
  * Google Pay as a means of payment.
@@ -29,14 +29,14 @@
 /**
  * Google Pay API Configuration
  */
-const allowedNetworks = ['VISA','MASTERCARD'];
-const allowedAuthMethods = ['PAN_ONLY','CRYPTOGRAM_3DS'] ;
+const allowedNetworks = ["VISA", "MASTERCARD"];
+const allowedAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
 
 const baseCardPaymentMethod = {
-  type: 'CARD',
+  type: "CARD",
   parameters: {
     allowedCardNetworks: allowedNetworks,
-    allowedAuthMethods: allowedAuthMethods 
+    allowedAuthMethods: allowedAuthMethods
   }
 };
 
@@ -60,37 +60,35 @@ let googlePayClient;
  * finished loading.
  */
 function onGooglePayLoaded() {
-  
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentClient({
-    environment: 'TEST',
+    environment: "TEST"
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
-  googlePayClient.isReadyToPay(googlePayBAseConfiguration)
-    .then((response) => {
-    if (response.result) {
-      createAndAddButton();
-    } else {
-      alert('Unable to pay with GPay');
-    }  })
+  googlePayClient
+    .isReadyToPay(googlePayBAseConfiguration)
+    .then(response => {
+      if (response.result) {
+        createAndAddButton();
+      } else {
+        alert("Unable to pay with GPay");
+      }
+    })
     .catch(e => console.log(e));
-
 }
 
 /**
  * Handles the creation of the button to pay with Google Pay.
- * Once created, this button is appended to the DOM, under the element 
+ * Once created, this button is appended to the DOM, under the element
  * 'buy-now'.
  */
 function createAndAddButton() {
-
   // TODO: Create Google Pay button andd add it to the DOM.
-
+  const googlePayButton = googlePayClient.createButton({onclick: onGooglePaymentsButtonClicked});
   // TODO: Add the button to the DOM
-  // googlePayButton.setAttribute('id', 'google-pay-button');
-  // domId('buy-now').appendChild(googlePayButton);
-  
+  googlePayButton.setAttribute('id', 'google-pay-button');
+  domId('buy-now').appendChild(googlePayButton);
 }
 
 /**
@@ -99,16 +97,14 @@ function createAndAddButton() {
  * the payments methods available to the user.
  */
 function onGooglePaymentsButtonClicked() {
-  
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
   // 1. Update the card created before to include a tokenization spec and other parameters.
   // 2. Add information about the transaction.
   // 3. Add information about the merchant.
   // 4. Call loadPaymentData.
-
 }
 
 function sendPayloadToProcessor(googlePayPayload) {
   // Send a POST request to your processor with the payload
-  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server 
+  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server
 }
