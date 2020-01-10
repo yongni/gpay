@@ -26,6 +26,8 @@
  * polymer, etc).
  */
 
+console.log('index loaded');
+
 /**
  * Google Pay API Configuration
  */
@@ -62,12 +64,12 @@ let googlePayClient;
 function onGooglePayLoaded() {
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
-  googlePayClient = new google.payments.api.PaymentClient({
+  googlePayClient = new google.payments.api.PaymentsClient({
     environment: "TEST"
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
   googlePayClient
-    .isReadyToPay(googlePayBAseConfiguration)
+    .isReadyToPay(googlePayBaseConfiguration)
     .then(response => {
       if (response.result) {
         createAndAddButton();
@@ -78,8 +80,6 @@ function onGooglePayLoaded() {
     .catch(e => console.log(e));
 }
 
-const domId = id => document.getElementById(id);
-
 /**
  * Handles the creation of the button to pay with Google Pay.
  * Once created, this button is appended to the DOM, under the element
@@ -88,11 +88,11 @@ const domId = id => document.getElementById(id);
 function createAndAddButton() {
   // TODO: Create Google Pay button andd add it to the DOM.
   const googlePayButton = googlePayClient.createButton({
-    onclick: onGooglePaymentsButtonClicked
+    onClick: onGooglePaymentsButtonClicked
   });
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
-  domId("buy-now").appendChild(googlePayButton);
+  document.getElementById("buy-now").appendChild(googlePayButton);
 }
 
 /**
@@ -103,6 +103,13 @@ function createAndAddButton() {
 function onGooglePaymentsButtonClicked() {
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
   // 1. Update the card created before to include a tokenization spec and other parameters.
+  const tokenizationSpecification = {
+  type: 'PAYMENT_GATEWAY',
+  parameters: {
+    gateway: 'example',
+    gatewayMerchantId: 'gatewayMerchantId'
+  }
+
   // 2. Add information about the transaction.
   // 3. Add information about the merchant.
   // 4. Call loadPaymentData.
