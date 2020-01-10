@@ -65,7 +65,8 @@ function onGooglePayLoaded() {
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
-    environment: "TEST"
+    environment: "TEST",
+    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback }
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
   googlePayClient
@@ -78,6 +79,10 @@ function onGooglePayLoaded() {
       }
     })
     .catch(e => console.log(e));
+}
+
+function paymentDataCallback(info) {
+  console.log(info);
 }
 
 /**
@@ -141,27 +146,28 @@ function onGooglePaymentsButtonClicked() {
   });
   // 4. Call loadPaymentData.
   googlePayClient
-  .loadPaymentData(paymentDataRequest)
-  .then(function(paymentData) {
-    processPayment(paymentData);
-  }).catch(function(err) {
-    // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
-  });
+    .loadPaymentData(paymentDataRequest)
+    .then(function(paymentData) {
+      processPayment(paymentData);
+    })
+    .catch(function(err) {
+      // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+    });
 }
 
 function processPayment(paymentData) {
   // TODO: Send a POST request to your processor with the payload
-  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server 
+  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server
   // Sorry, this is out-of-scope for this codelab.
   console.log(paymentData);
-  
+
   return new Promise(function(resolve, reject) {
     // @todo pass payment token to your gateway to process payment
     const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-    console.log('mock send token ' + paymentToken + ' to payment processor');
+    console.log("mock send token " + paymentToken + " to payment processor");
     setTimeout(function() {
-      console.log('mock response from processor');
-      alert('done');
+      console.log("mock response from processor");
+      alert("done");
       resolve({});
     }, 800);
   });
