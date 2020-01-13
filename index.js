@@ -145,8 +145,38 @@ function onGooglePaymentsButtonClicked() {
     merchantInfo: merchantInfo
   });
   // 4. Call loadPaymentData.
+  
+  const test_request = {
+  "apiVersion": 2,
+  "apiVersionMinor": 0,
+  "merchantInfo": {
+    "merchantName": "Example Merchant"
+  },
+  "allowedPaymentMethods": [
+    {
+      "type": "CARD",
+      "parameters": {
+        "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+        "allowedCardNetworks": ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"]
+      },
+      "tokenizationSpecification": {
+        "type": "PAYMENT_GATEWAY",
+        "parameters": {
+          "gateway": "example",
+          "gatewayMerchantId": "exampleGatewayMerchantId"
+        }
+      }
+    }
+  ],
+  "transactionInfo": {
+    "totalPriceStatus": "FINAL",
+    "totalPrice": "12.34",
+    "currencyCode": "USD"
+  }
+}
+  
   googlePayClient
-    .loadPaymentData(paymentDataRequest)
+    .loadPaymentData(test_request || paymentDataRequest)
     .then(function(paymentData) {
       processPayment(paymentData);
     })
