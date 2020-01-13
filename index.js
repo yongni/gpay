@@ -94,7 +94,10 @@ function onGooglePayLoaded() {
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
-    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback, onPaymentAuthorized: () => console.log() },
+    paymentDataCallbacks: {
+      onPaymentDataChanged: paymentDataCallback,
+      onPaymentAuthorized: paymentData => console.log(paymentData)
+    },
     environment: "TEST"
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
@@ -200,7 +203,7 @@ function onGooglePaymentsButtonClicked() {
   // Place inside of onGooglePaymentsButtonClicked()
   paymentDataRequest.shippingAddressRequired = true;
   paymentDataRequest.shippingOptionRequired = true;
-  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION", "SHIPPING_ADDRESS"];
+  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION", "SHIPPING_ADDRESS", "PAYMENT_AUTHORIZATION"];
   paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
 
   console.log(paymentDataRequest);
@@ -219,7 +222,7 @@ function processPayment(paymentData) {
   // TODO: Send a POST request to your processor with the payload
   // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server
   // Sorry, this is out-of-scope for this codelab.
-  console.log(paymentData);
+  console.log('After loadPaymentData: %s', paymentData);
 
   return new Promise(function(resolve, reject) {
     // @todo pass payment token to your gateway to process payment
