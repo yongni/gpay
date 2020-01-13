@@ -57,6 +57,7 @@ const googlePayBaseConfiguration = {
 let googlePayClient;
 
 function paymentDataCallback(callbackPayload) {
+  console.log("paymentDataCallback:");
   console.log(callbackPayload);
   const selectedShippingOptionId = callbackPayload.shippingOptionData.id;
   const shippingSurcharge = shippingSurcharges[selectedShippingOptionId];
@@ -85,6 +86,20 @@ function paymentDataCallback(callbackPayload) {
   };
 }
 
+function paymentAuthorizedCallback(callbackPayload) {
+  console.log("paymentDataCallback:");
+  console.log(callbackPayload);
+  // Fake error.
+  return {
+    transactionState: "ERROR",
+    error: {
+      reason: "PAYMENT_DATA_INVALID",
+      message: "Cannot pay with Yong's Test payment credentials",
+      intent: "PAYMENT_AUTHORIZATION"
+    }
+  };
+}
+
 /**
  * Defines and handles the main operations related to the integration of
  * Google Pay. This function is executed when the Google Pay library script has
@@ -96,7 +111,7 @@ function onGooglePayLoaded() {
   googlePayClient = new google.payments.api.PaymentsClient({
     paymentDataCallbacks: {
       onPaymentDataChanged: paymentDataCallback,
-      onPaymentAuthorized: paymentData => console.log(paymentData)
+      onPaymentAuthorized: paymentAuthorizedCallback,
     },
     environment: "TEST"
   });
@@ -203,7 +218,11 @@ function onGooglePaymentsButtonClicked() {
   // Place inside of onGooglePaymentsButtonClicked()
   paymentDataRequest.shippingAddressRequired = true;
   paymentDataRequest.shippingOptionRequired = true;
-  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION", "SHIPPING_ADDRESS", "PAYMENT_AUTHORIZATION"];
+  paymentDataRequest.callbackIntents = [
+    "SHIPPING_OPTION",
+    "SHIPPING_ADDRESS",
+    "PAYMENT_AUTHORIZATION"
+  ];
   paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
 
   console.log(paymentDataRequest);
@@ -222,7 +241,7 @@ function processPayment(paymentData) {
   // TODO: Send a POST request to your processor with the payload
   // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server
   // Sorry, this is out-of-scope for this codelab.
-  console.log('After loadPaymentData: %s', paymentData);
+  console.log("After loadPaymentData: %s", paymentData);
 
   return new Promise(function(resolve, reject) {
     // @todo pass payment token to your gateway to process payment

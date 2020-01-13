@@ -188,7 +188,7 @@ function uiPagePurchaseSuccess() {
  */
 function handleHashChange(e) {
   const urlHash = window.location.hash;
-  console.log('Hash changed to: ', urlHash);
+  // console.log('Hash changed to: ', urlHash);
 
   const navElementForHash = {
     '#shop-tshirt-any': 'nav-tshirt-any',
