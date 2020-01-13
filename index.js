@@ -115,6 +115,7 @@ function onGooglePayLoaded() {
     .then(response => {
       if (response.result) {
         createAndAddButton();
+        googlePayClient.prefetchPaymentData(getPaymentDataNoTransaction());
       } else {
         alert("Unable to pay with GPay");
       }
@@ -164,12 +165,7 @@ function createAndAddButton() {
   document.getElementById("buy-now").appendChild(googlePayButton);
 }
 
-/**
- * Handles the click of the button to pay with Google Pay. Takes
- * care of defining the payment data request to be used in order to load
- * the payments methods available to the user.
- */
-function onGooglePaymentsButtonClicked() {
+function getPaymentDataNoTransaction() {
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
   // 1. Update the card created before to include a tokenization spec and other parameters.
   const tokenizationSpecification = {
@@ -192,12 +188,7 @@ function onGooglePaymentsButtonClicked() {
       }
     }
   };
-  // 2. Add information about the transaction.
-  const transactionInfo = {
-    totalPriceStatus: "FINAL",
-    totalPrice: "123.45",
-    currencyCode: "USD"
-  };
+
   // 3. Add information about the merchant.
   const merchantInfo = {
     // merchantId: '01234567890123456789', Only in PRODUCTION
@@ -205,7 +196,7 @@ function onGooglePaymentsButtonClicked() {
   };
   const paymentDataRequest = Object.assign(googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
-    transactionInfo: transactionInfo,
+    transactionInfo: {totalPriceStatus: 'NOT_CURRENTLY_KNOWN'},
     merchantInfo: merchantInfo
   });
 
@@ -219,6 +210,27 @@ function onGooglePaymentsButtonClicked() {
   ];
   paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
 
+  return paymentDataRequest;
+}
+
+/**
+ * Handles the click of the button to pay with Google Pay. Takes
+ * care of defining the payment data request to be used in order to load
+ * the payments methods available to the user.
+ */
+function onGooglePaymentsButtonClicked() {
+  // 2. Add information about the transaction.
+  const transactionInfo = {
+    totalPriceStatus: "FINAL",
+    totalPrice: "123.45",
+    currencyCode: "USD"
+  };
+  const paymentDataRequest = Object.appy(
+    {
+      transactionInfo
+    },
+    getPaymentDataNoTransaction()
+  );
   console.log(paymentDataRequest);
   // 4. Call loadPaymentData.
   googlePayClient
