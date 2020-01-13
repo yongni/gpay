@@ -93,7 +93,7 @@ function paymentDataCallback(info) {
 function createAndAddButton() {
   // TODO: Create Google Pay button andd add it to the DOM.
   const googlePayButton = googlePayClient.createButton({
-    onClick: onGooglePaymentsButtonClicked
+    onClick: onGooglePaymentsButtonClicked,
   });
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
@@ -152,6 +152,7 @@ function onGooglePaymentsButtonClicked() {
     })
     .catch(function(err) {
       // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+      alert(err);
     });
 }
 
