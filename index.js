@@ -87,16 +87,10 @@ function paymentDataCallback(callbackPayload) {
 }
 
 function paymentAuthorizedCallback(callbackPayload) {
-  console.log("paymentDataCallback:");
+  console.log("paymentAuthorizedCallback:");
   console.log(callbackPayload);
-  // Fake error.
   return {
-    transactionState: "ERROR",
-    error: {
-      reason: "PAYMENT_DATA_INVALID",
-      message: "Cannot pay with Yong's Test payment credentials",
-      intent: "PAYMENT_AUTHORIZATION"
-    }
+    transactionState: "SUCCESS"
   };
 }
 
@@ -111,7 +105,7 @@ function onGooglePayLoaded() {
   googlePayClient = new google.payments.api.PaymentsClient({
     paymentDataCallbacks: {
       onPaymentDataChanged: paymentDataCallback,
-      onPaymentAuthorized: paymentAuthorizedCallback,
+      onPaymentAuthorized: paymentAuthorizedCallback
     },
     environment: "TEST"
   });
@@ -234,6 +228,7 @@ function onGooglePaymentsButtonClicked() {
     })
     .catch(function(err) {
       // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+      console.log(err);
     });
 }
 
