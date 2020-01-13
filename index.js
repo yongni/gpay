@@ -139,6 +139,7 @@ function onGooglePaymentsButtonClicked() {
     transactionInfo: transactionInfo,
     merchantInfo: merchantInfo
   });
+  console.log(paymentDataRequest);
   // 4. Call loadPaymentData.
   googlePayClient
   .loadPaymentData(paymentDataRequest)
