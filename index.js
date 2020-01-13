@@ -56,6 +56,34 @@ const googlePayBaseConfiguration = {
  */
 let googlePayClient;
 
+function paymentDataCallback(callbackPayload) {
+  const selectedShippingOptionId = callbackPayload.shippingOptionData.id;
+  const shippingSurcharge = shippingSurcharges[selectedShippingOptionId];
+  const priceWithSurcharges = 123.45 + shippingSurcharge;
+
+  return {
+    newTransactionInfo: {
+      totalPriceStatus: "FINAL",
+      totalPrice: priceWithSurcharges.toFixed(2),
+      totalPriceLabel: "Total",
+      currencyCode: "USD",
+      displayItems: [
+        {
+          label: "Subtotal",
+          type: "SUBTOTAL",
+          price: priceWithSurcharges.toFixed(2)
+        },
+        {
+          label: "Shipping",
+          type: "LINE_ITEM",
+          price: shippingSurcharge.toFixed(2),
+          status: "FINAL"
+        }
+      ]
+    }
+  };
+}
+
 /**
  * Defines and handles the main operations related to the integration of
  * Google Pay. This function is executed when the Google Pay library script has
@@ -65,6 +93,7 @@ function onGooglePayLoaded() {
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
+    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback },
     environment: "TEST"
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
@@ -79,6 +108,33 @@ function onGooglePayLoaded() {
     })
     .catch(e => console.log(e));
 }
+
+const shippingOptionParameters = {
+  shippingOptions: [
+    {
+      id: "shipping-001",
+      label: "$1.99: Standard shipping",
+      description: "Delivered on May 15."
+    },
+    {
+      id: "shipping-002",
+      label: "$3.99: Expedited shipping",
+      description: "Delivered on May 12."
+    },
+    {
+      id: "shipping-003",
+      label: "$10: Express shipping",
+      description: "Delivered tomorrow."
+    }
+  ]
+};
+
+// Shipping surcharges mapped to the IDs above.
+const shippingSurcharges = {
+  "shipping-001": 1.99,
+  "shipping-002": 3.99,
+  "shipping-003": 10
+};
 
 /**
  * Handles the creation of the button to pay with Google Pay.
@@ -139,30 +195,38 @@ function onGooglePaymentsButtonClicked() {
     transactionInfo: transactionInfo,
     merchantInfo: merchantInfo
   });
+
+  // Place inside of onGooglePaymentsButtonClicked()
+  paymentDataRequest.shippingAddressRequired = true;
+  paymentDataRequest.shippingOptionRequired = true;
+  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION"];
+  paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
+
   console.log(paymentDataRequest);
   // 4. Call loadPaymentData.
   googlePayClient
-  .loadPaymentData(paymentDataRequest)
-  .then(function(paymentData) {
-    processPayment(paymentData);
-  }).catch(function(err) {
-    // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
-  });
+    .loadPaymentData(paymentDataRequest)
+    .then(function(paymentData) {
+      processPayment(paymentData);
+    })
+    .catch(function(err) {
+      // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+    });
 }
 
 function processPayment(paymentData) {
   // TODO: Send a POST request to your processor with the payload
-  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server 
+  // https://us-central1-devrel-payments.cloudfunctions.net/google-pay-server
   // Sorry, this is out-of-scope for this codelab.
   console.log(paymentData);
-  
+
   return new Promise(function(resolve, reject) {
     // @todo pass payment token to your gateway to process payment
     const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-    console.log('mock send token ' + paymentToken + ' to payment processor');
+    console.log("mock send token " + paymentToken + " to payment processor");
     setTimeout(function() {
-      console.log('mock response from processor');
-      alert('done');
+      console.log("mock response from processor");
+      alert("done");
       resolve({});
     }, 800);
   });
