@@ -57,6 +57,7 @@ const googlePayBaseConfiguration = {
 let googlePayClient;
 
 function paymentDataCallback(callbackPayload) {
+  console.log(callbackPayload);
   const selectedShippingOptionId = callbackPayload.shippingOptionData.id;
   const shippingSurcharge = shippingSurcharges[selectedShippingOptionId];
   const priceWithSurcharges = 123.45 + shippingSurcharge;
@@ -93,7 +94,7 @@ function onGooglePayLoaded() {
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
-    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback },
+    paymentDataCallbacks: { onPaymentDataChanged: paymentDataCallback, onPaymentAuthorized: () => console.log() },
     environment: "TEST"
   });
   // 2. Call the isReadyToPay method passing in the necessary configuration.
@@ -190,7 +191,7 @@ function onGooglePaymentsButtonClicked() {
     // merchantId: '01234567890123456789', Only in PRODUCTION
     merchantName: "Example Merchant Name"
   };
-  const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
+  const paymentDataRequest = Object.assign(googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
     transactionInfo: transactionInfo,
     merchantInfo: merchantInfo
@@ -199,7 +200,7 @@ function onGooglePaymentsButtonClicked() {
   // Place inside of onGooglePaymentsButtonClicked()
   paymentDataRequest.shippingAddressRequired = true;
   paymentDataRequest.shippingOptionRequired = true;
-  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION"];
+  paymentDataRequest.callbackIntents = ["SHIPPING_OPTION", "SHIPPING_ADDRESS"];
   paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
 
   console.log(paymentDataRequest);
