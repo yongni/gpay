@@ -194,11 +194,11 @@ function getPaymentDataNoTransaction() {
     // merchantId: '01234567890123456789', Only in PRODUCTION
     merchantName: "Example Merchant Name"
   };
-  const paymentDataRequest = Object.assign(googlePayBaseConfiguration, {
+  const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
     transactionInfo: {
       totalPriceStatus: "NOT_CURRENTLY_KNOWN",
-      currencyCode: "USD"
+      // currencyCode: "USD"
     },
     merchantInfo: merchantInfo
   });
@@ -228,12 +228,9 @@ function onGooglePaymentsButtonClicked() {
     totalPrice: "123.45",
     currencyCode: "USD"
   };
-  const paymentDataRequest = Object.assign(
-    {
-      transactionInfo: transactionInfo
-    },
-    getPaymentDataNoTransaction()
-  );
+  const paymentDataRequest = Object.assign(getPaymentDataNoTransaction(), {
+    transactionInfo
+  });
   console.log(paymentDataRequest);
   // 4. Call loadPaymentData.
   googlePayClient
