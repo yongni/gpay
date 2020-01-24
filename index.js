@@ -254,90 +254,48 @@ function onGooglePaymentsButtonClicked() {
  */
 function onBuyPRButtonClicked() {
   let request = null;
-  const supportedInstruments = [
-    {
-        supportedMethods: "https://google.com/pay",
-        data: {
-          apiVersion: 2,
-          apiVersionMinor: 0,
-          allowedPaymentMethods: [
-            {
-              type: "CARD",
-              parameters: {
-                allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-                allowedCardNetworks: [
-                  "AMEX",
-                  "DISCOVER",
-                  "INTERAC",
-                  "JCB",
-                  "VISA",
-                  "MASTERCARD"
-                ]
-              },
-              tokenizationSpecification: {
-                type: "PAYMENT_GATEWAY",
-                parameters: {
-                  gateway: "stripe",
-                  // Please use your own Stripe public key.
-                  "stripe:publishableKey": "pk_live_lNk21zqKM2BENZENh3rzCUgo",
-                  "stripe:version": "2016-07-06"
-                }
-              }
-            }
-          ],
-          transactionInfo: {
-            countryCode: "US",
-            currencyCode: "USD",
-            totalPriceStatus: "FINAL",
-            totalPrice: "1.00"
-          },
-          // Please use your own Google Pay merchant ID.
-          merchantInfo: {
-            merchantName: "Rouslan Solomakhin",
-            merchantId: "00184145120947117657"
-          }
-        }
-
-    }
-    
-  ];
-  const details = ;
+  const supportedInstrument = {
+    supportedMethods: "https://google.com/pay",
+    data: Object.assign({}, googlePayBaseConfiguration, {
+      allowedPaymentMethods: [cardPaymentMethod],
+      transactionInfo: {
+        totalPriceStatus: "NOT_CURRENTLY_KNOWN"
+        // currencyCode: "USD"
+      },
+      merchantInfo: merchantInfo
+    })
+  };
+  const details = null;
   try {
-    request = new PaymentRequest(supportedInstruments, details);
+    request = new PaymentRequest([supportedInstrument], details);
     if (request.canMakePayment) {
-      request.canMakePayment().then(function(result) {
-        console.log(result ? "Can make payment" : "Cannot make payment");
-      }).catch(function(err) {
-        console.log(err);
-      });
+      request
+        .canMakePayment()
+        .then(function(result) {
+          console.log(result ? "Can make payment" : "Cannot make payment");
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
     }
 
     if (request.hasEnrolledInstrument) {
-      request.hasEnrolledInstrument().then(function(result) {
-        console.log(result ? "Has enrolled instrument" : "No enrolled instrument");
-      }).catch(function(err) {
-        console.log(err);
-      });
+      request
+        .hasEnrolledInstrument()
+        .then(function(result) {
+          console.log(
+            result ? "Has enrolled instrument" : "No enrolled instrument"
+          );
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
     }
   } catch (e) {
-    console.log('Developer mistake: \'' + e + '\'');
+    console.log("Developer mistake: '" + e + "'");
   }
 
-  const pr = new PaymentRequest(
-    [
-      {
-      }
-    ],
-    {
-      total: {
-        label: "Tots",
-        amount: {
-          currency: "USD",
-          value: "1.00"
-        }
-      }
-    }
-  );
+  const pr = new PaymentRequest();
   pr.show();
   return;
 
