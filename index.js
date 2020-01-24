@@ -163,10 +163,9 @@ function createAndAddButton() {
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
   document.getElementById("buy-now").appendChild(googlePayButton);
-  
+
   //
   //document.getElementById("buy-now-pr").onClick = onBuyPRButtonClicked;
-  
 }
 
 function getPaymentDataNoTransaction() {
@@ -201,7 +200,7 @@ function getPaymentDataNoTransaction() {
   const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
     transactionInfo: {
-      totalPriceStatus: "NOT_CURRENTLY_KNOWN",
+      totalPriceStatus: "NOT_CURRENTLY_KNOWN"
       // currencyCode: "USD"
     },
     merchantInfo: merchantInfo
@@ -254,52 +253,65 @@ function onGooglePaymentsButtonClicked() {
  * the payments methods available to the user.
  */
 function onBuyPRButtonClicked() {
-  
-  const pr = new PaymentRequest([{
-  supportedMethods: 'https://google.com/pay',
-  data: {
-    apiVersion: 2,
-    apiVersionMinor: 0,
-    allowedPaymentMethods: [{
-      type: 'CARD',
-      parameters: {
-        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-        allowedCardNetworks: ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'VISA', 'MASTERCARD'],
-      },
-      tokenizationSpecification: {
-        type: 'PAYMENT_GATEWAY',
-        parameters: {
-          'gateway': 'stripe',
-          // Please use your own Stripe public key.
-          'stripe:publishableKey': 'pk_live_lNk21zqKM2BENZENh3rzCUgo',
-          'stripe:version': '2016-07-06',
-        },
-      },
-    }],
-    transactionInfo: {
-      countryCode: 'US',
-      currencyCode: 'USD',
-      totalPriceStatus: 'FINAL',
-      totalPrice: '1.00',
-    },
-    // Please use your own Google Pay merchant ID.
-    merchantInfo: {
-      merchantName: 'Rouslan Solomakhin',
-      merchantId: '00184145120947117657',
-    },
-  },
-}], {
-  total: {
-    label: 'Tots',
-    amount: {
-      currency: 'USD',
-      value: '1.00',
-    },
-  },
-});
+  const pr = new PaymentRequest(
+    [
+      {
+        supportedMethods: "https://google.com/pay",
+        data: {
+          apiVersion: 2,
+          apiVersionMinor: 0,
+          allowedPaymentMethods: [
+            {
+              type: "CARD",
+              parameters: {
+                allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                allowedCardNetworks: [
+                  "AMEX",
+                  "DISCOVER",
+                  "INTERAC",
+                  "JCB",
+                  "VISA",
+                  "MASTERCARD"
+                ]
+              },
+              tokenizationSpecification: {
+                type: "PAYMENT_GATEWAY",
+                parameters: {
+                  gateway: "stripe",
+                  // Please use your own Stripe public key.
+                  "stripe:publishableKey": "pk_live_lNk21zqKM2BENZENh3rzCUgo",
+                  "stripe:version": "2016-07-06"
+                }
+              }
+            }
+          ],
+          transactionInfo: {
+            countryCode: "US",
+            currencyCode: "USD",
+            totalPriceStatus: "FINAL",
+            totalPrice: "1.00"
+          },
+          // Please use your own Google Pay merchant ID.
+          merchantInfo: {
+            merchantName: "Rouslan Solomakhin",
+            merchantId: "00184145120947117657"
+          }
+        }
+      }
+    ],
+    {
+      total: {
+        label: "Tots",
+        amount: {
+          currency: "USD",
+          value: "1.00"
+        }
+      }
+    }
+  );
   pr.show();
   return;
-  
+
   // 2. Add information about the transaction.
   const transactionInfo = {
     totalPriceStatus: "FINAL",
