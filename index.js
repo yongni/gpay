@@ -195,7 +195,8 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
   // 3. Add information about the merchant.
   const merchantInfo = {
     // merchantId: '01234567890123456789', Only in PRODUCTION
-    merchantName: "Example Merchant Name"
+    merchantName: "Rouslan Solomakhin",
+    merchantId: "00184145120947117657"
   };
   const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
@@ -207,7 +208,7 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
   });
 
   if (!dynamic_update) return paymentDataRequest;
-  
+
   // Place inside of onGooglePaymentsButtonClicked()
   paymentDataRequest.shippingAddressRequired = true;
   paymentDataRequest.shippingOptionRequired = true;
@@ -283,7 +284,7 @@ function onBuyPRButtonClicked() {
           console.log(err);
         });
     }
-/*
+    /*
     if (request.hasEnrolledInstrument) {
       request
         .hasEnrolledInstrument()
