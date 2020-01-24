@@ -168,7 +168,7 @@ function createAndAddButton() {
   //document.getElementById("buy-now-pr").onClick = onBuyPRButtonClicked;
 }
 
-function getPaymentDataNoTransaction() {
+function getPaymentDataNoTransaction(dynamic_update = true) {
   // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
   // 1. Update the card created before to include a tokenization spec and other parameters.
   const tokenizationSpecification = {
@@ -206,6 +206,8 @@ function getPaymentDataNoTransaction() {
     merchantInfo: merchantInfo
   });
 
+  if (!dynamic_update) return paymentDataRequest;
+  
   // Place inside of onGooglePaymentsButtonClicked()
   paymentDataRequest.shippingAddressRequired = true;
   paymentDataRequest.shippingOptionRequired = true;
@@ -256,7 +258,7 @@ function onBuyPRButtonClicked() {
   let request = null;
   const supportedInstrument = {
     supportedMethods: "https://google.com/pay",
-    data: getPaymentDataNoTransaction()
+    data: getPaymentDataNoTransaction(false)
   };
   const details = {
     total: {
@@ -281,7 +283,7 @@ function onBuyPRButtonClicked() {
           console.log(err);
         });
     }
-
+/*
     if (request.hasEnrolledInstrument) {
       request
         .hasEnrolledInstrument()
@@ -294,6 +296,7 @@ function onBuyPRButtonClicked() {
           console.log(err);
         });
     }
+    */
   } catch (e) {
     console.log("Developer mistake: '" + e + "'");
   }
