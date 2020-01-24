@@ -227,11 +227,8 @@ shop-select > [prefix] {
   text-align: center;
 }
 
-#buy-pr:not([visible]) {
-  display: none;
-}
 
-#buy-pr a.btn {
+#buy-now-pr {
   display: block;
   width: 240px;
   text-decoration: none;
