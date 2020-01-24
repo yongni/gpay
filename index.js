@@ -256,16 +256,17 @@ function onBuyPRButtonClicked() {
   let request = null;
   const supportedInstrument = {
     supportedMethods: "https://google.com/pay",
-    data: Object.assign({}, googlePayBaseConfiguration, {
-      allowedPaymentMethods: [cardPaymentMethod],
-      transactionInfo: {
-        totalPriceStatus: "NOT_CURRENTLY_KNOWN"
-        // currencyCode: "USD"
-      },
-      merchantInfo: merchantInfo
-    })
+    data: getPaymentDataNoTransaction()
   };
-  const details = null;
+  const details = {
+    total: {
+      label: "Tots",
+      amount: {
+        currency: "USD",
+        value: "1.00"
+      }
+    }
+  };
   try {
     request = new PaymentRequest([supportedInstrument], details);
     if (request.canMakePayment) {
@@ -273,6 +274,7 @@ function onBuyPRButtonClicked() {
         .canMakePayment()
         .then(function(result) {
           console.log(result ? "Can make payment" : "Cannot make payment");
+          request.show();
         })
         .catch(function(err) {
           console.log(err);
@@ -294,31 +296,6 @@ function onBuyPRButtonClicked() {
   } catch (e) {
     console.log("Developer mistake: '" + e + "'");
   }
-
-  const pr = new PaymentRequest();
-  pr.show();
-  return;
-
-  // 2. Add information about the transaction.
-  const transactionInfo = {
-    totalPriceStatus: "FINAL",
-    totalPrice: "123.45",
-    currencyCode: "USD"
-  };
-  const paymentDataRequest = Object.assign(getPaymentDataNoTransaction(), {
-    transactionInfo
-  });
-  console.log(paymentDataRequest);
-  // 4. Call loadPaymentData.
-  googlePayClient
-    .loadPaymentData(paymentDataRequest)
-    .then(function(paymentData) {
-      processPayment(paymentData);
-    })
-    .catch(function(err) {
-      // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
-      console.log(err);
-    });
 }
 
 function processPayment(paymentData) {
