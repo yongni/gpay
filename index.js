@@ -253,9 +253,9 @@ function onGooglePaymentsButtonClicked() {
  * the payments methods available to the user.
  */
 function onBuyPRButtonClicked() {
-  const pr = new PaymentRequest(
-    [
-      {
+  let request = null;
+  const supportedInstruments = [
+    {
         supportedMethods: "https://google.com/pay",
         data: {
           apiVersion: 2,
@@ -297,6 +297,35 @@ function onBuyPRButtonClicked() {
             merchantId: "00184145120947117657"
           }
         }
+
+    }
+    
+  ];
+  const details = ;
+  try {
+    request = new PaymentRequest(supportedInstruments, details);
+    if (request.canMakePayment) {
+      request.canMakePayment().then(function(result) {
+        console.log(result ? "Can make payment" : "Cannot make payment");
+      }).catch(function(err) {
+        console.log(err);
+      });
+    }
+
+    if (request.hasEnrolledInstrument) {
+      request.hasEnrolledInstrument().then(function(result) {
+        console.log(result ? "Has enrolled instrument" : "No enrolled instrument");
+      }).catch(function(err) {
+        console.log(err);
+      });
+    }
+  } catch (e) {
+    console.log('Developer mistake: \'' + e + '\'');
+  }
+
+  const pr = new PaymentRequest(
+    [
+      {
       }
     ],
     {
