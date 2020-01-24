@@ -200,8 +200,8 @@ function getPaymentDataNoTransaction() {
   const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
     transactionInfo: {
-      totalPriceStatus: "NOT_CURRENTLY_KNOWN"
-      // currencyCode: "USD"
+      totalPriceStatus: "NOT_CURRENTLY_KNOWN",
+      currencyCode: "USD"
     },
     merchantInfo: merchantInfo
   });
@@ -274,6 +274,7 @@ function onBuyPRButtonClicked() {
         .canMakePayment()
         .then(function(result) {
           console.log(result ? "Can make payment" : "Cannot make payment");
+          console.dir(request);
           request.show();
         })
         .catch(function(err) {
