@@ -163,6 +163,14 @@ function createAndAddButton() {
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
   document.getElementById("buy-now").appendChild(googlePayButton);
+  
+  // TODO: Create Google Pay button andd add it to the DOM.
+  const googlePR = googlePayClient.createButton({
+    onClick: onBuyPRButtonClicked
+  });
+  googlePR.setAttribute("id", "google-pay-button-pr");
+  document.getElementById("buy-now").onClick = 
+  
 }
 
 function getPaymentDataNoTransaction() {
@@ -222,6 +230,34 @@ function getPaymentDataNoTransaction() {
  * the payments methods available to the user.
  */
 function onGooglePaymentsButtonClicked() {
+  // 2. Add information about the transaction.
+  const transactionInfo = {
+    totalPriceStatus: "FINAL",
+    totalPrice: "123.45",
+    currencyCode: "USD"
+  };
+  const paymentDataRequest = Object.assign(getPaymentDataNoTransaction(), {
+    transactionInfo
+  });
+  console.log(paymentDataRequest);
+  // 4. Call loadPaymentData.
+  googlePayClient
+    .loadPaymentData(paymentDataRequest)
+    .then(function(paymentData) {
+      processPayment(paymentData);
+    })
+    .catch(function(err) {
+      // Log error: { statusCode: CANCELED || DEVELOPER_ERROR }
+      console.log(err);
+    });
+}
+
+/**
+ * Handles the click of the button to pay with Google Pay. Takes
+ * care of defining the payment data request to be used in order to load
+ * the payments methods available to the user.
+ */
+function onBuyPRButtonClicked() {
   // 2. Add information about the transaction.
   const transactionInfo = {
     totalPriceStatus: "FINAL",

@@ -227,6 +227,17 @@ shop-select > [prefix] {
   text-align: center;
 }
 
+#buy-pr:not([visible]) {
+  display: none;
+}
+
+#buy-pr a.btn {
+  display: block;
+  width: 240px;
+  text-decoration: none;
+  text-align: center;
+}
+
 #shop-tshirt {
   display: flex;
   -ms-flex-direction: normal;
