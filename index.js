@@ -165,7 +165,10 @@ function createAndAddButton() {
   document.getElementById("buy-now").appendChild(googlePayButton);
 
   //
-  document.getElementById("buy-now-pr").onClick = onBuyPRButtonClicked;
+  document.getElementById("buy-now-pr").addEventListener('click', (e) => {
+    console.log(e);
+    onBuyPRClicked();
+  });
 }
 
 function getPaymentDataNoTransaction(dynamic_update = true) {
@@ -255,7 +258,13 @@ function onGooglePaymentsButtonClicked() {
  * care of defining the payment data request to be used in order to load
  * the payments methods available to the user.
  */
+
+function onBuyPRClicked() {
+  console.log("Buy PR clicked");
+}
+
 function onBuyPRButtonClicked() {
+  console.log("Buy PR clicked");
   let request = null;
   const supportedInstrument = {
     supportedMethods: "https://google.com/pay",
