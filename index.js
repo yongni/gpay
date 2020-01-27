@@ -165,10 +165,9 @@ function createAndAddButton() {
   document.getElementById("buy-now").appendChild(googlePayButton);
 
   //
-  document.getElementById("buy-now-pr").addEventListener('click', (e) => {
-    console.log(e);
-    onBuyPRClicked();
-  });
+  document
+    .getElementById("buy-now-pr")
+    .addEventListener("click", onBuyPRClicked);
 }
 
 function getPaymentDataNoTransaction(dynamic_update = true) {
@@ -260,17 +259,19 @@ function onGooglePaymentsButtonClicked() {
  */
 
 function onBuyPRClicked() {
-  console.log("Buy PR clicked");
-}
-
-function onBuyPRButtonClicked() {
-  console.log("Buy PR clicked");
   let request = null;
   const supportedInstrument = {
     supportedMethods: "https://google.com/pay",
     data: Object.assign(getPaymentDataNoTransaction(false), {
       transactionInfo
     })
+  };
+  const basicCard = {
+    supportedMethods: "basic-card",
+    data: {
+      supportedNetworks: ["visa", "master", "jcb"],
+      supportedTypes: ["credit", "debit", "prepaid"]
+    }
   };
   const details = {
     total: {
@@ -282,7 +283,7 @@ function onBuyPRButtonClicked() {
     }
   };
   try {
-    request = new PaymentRequest([supportedInstrument], details);
+    request = new PaymentRequest([basicCard, supportedInstrument], details);
     if (request.canMakePayment) {
       request
         .canMakePayment()
