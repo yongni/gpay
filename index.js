@@ -165,7 +165,7 @@ function createAndAddButton() {
   document.getElementById("buy-now").appendChild(googlePayButton);
 
   //
-  //document.getElementById("buy-now-pr").onClick = onBuyPRButtonClicked;
+  document.getElementById("buy-now-pr").onClick = onBuyPRButtonClicked;
 }
 
 function getPaymentDataNoTransaction(dynamic_update = true) {
@@ -251,71 +251,11 @@ function onGooglePaymentsButtonClicked() {
 }
 
 /**
- * Handles the click of the button to pay with Google Pay. Takes
+ * Handles the click of the button to pay with Google Pay with PR. Takes
  * care of defining the payment data request to be used in order to load
  * the payments methods available to the user.
  */
 function onBuyPRButtonClicked() {
-  const request = new PaymentRequest(
-    [
-      {
-        supportedMethods: "https://google.com/pay",
-        data: {
-          apiVersion: 2,
-          apiVersionMinor: 0,
-          allowedPaymentMethods: [
-            {
-              type: "CARD",
-              parameters: {
-                allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
-                allowedCardNetworks: [
-                  "AMEX",
-                  "DISCOVER",
-                  "INTERAC",
-                  "JCB",
-                  "VISA",
-                  "MASTERCARD"
-                ]
-              },
-              tokenizationSpecification: {
-                type: "PAYMENT_GATEWAY",
-                parameters: {
-                  gateway: "stripe",
-                  // Please use your own Stripe public key.
-                  "stripe:publishableKey": "pk_live_lNk21zqKM2BENZENh3rzCUgo",
-                  "stripe:version": "2016-07-06"
-                }
-              }
-            }
-          ],
-          transactionInfo: {
-            countryCode: "US",
-            currencyCode: "USD",
-            totalPriceStatus: "FINAL",
-            totalPrice: "1.00"
-          },
-          // Please use your own Google Pay merchant ID.
-          merchantInfo: {
-            merchantName: "Rouslan Solomakhin",
-            merchantId: "00184145120947117657"
-          }
-        }
-      }
-    ],
-    {
-      total: {
-        label: "Tots",
-        amount: {
-          currency: "USD",
-          value: "1.00"
-        }
-      }
-    }
-  );
-  request.show();
-}
-
-function onBuyPRButtonClicked_2() {
   let request = null;
   const supportedInstrument = {
     supportedMethods: "https://google.com/pay",
