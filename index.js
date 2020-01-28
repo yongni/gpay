@@ -26,11 +26,6 @@
  * polymer, etc).
  */
 
-console.log("index loaded");
-
-/**
- * Google Pay API Configuration
- */
 const allowedNetworks = ["VISA", "MASTERCARD"];
 const allowedAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
 
@@ -46,6 +41,46 @@ const googlePayBaseConfiguration = {
   apiVersion: 2,
   apiVersionMinor: 0,
   allowedPaymentMethods: [baseCardPaymentMethod]
+};
+
+// Information about the merchant.
+const merchantInfo = {
+  merchantName: "Fake Merchant",
+  merchantId: "01234567890123456789"
+  // merchantName: "Rouslan Solomakhin", merchantId: "00184145120947117657"
+};
+
+const shippingOptionParameters = {
+  shippingOptions: [
+    {
+      id: "shipping-001",
+      label: "$1.99: Standard shipping",
+      description: "Delivered on May 15."
+    },
+    {
+      id: "shipping-002",
+      label: "$2.99: Expedited shipping",
+      description: "Delivered on May 12."
+    },
+    {
+      id: "shipping-003",
+      label: "$3.99: Express shipping",
+      description: "Delivered tomorrow."
+    }
+  ]
+};
+
+// Shipping surcharges mapped to the IDs above.
+const shippingSurcharges = {
+  "shipping-001": 1.99,
+  "shipping-002": 3.99,
+  "shipping-003": 10
+};
+
+const transactionInfo = {
+  totalPriceStatus: "FINAL",
+  totalPrice: "1.00",
+  currencyCode: "USD"
 };
 
 /**
@@ -123,33 +158,6 @@ function onGooglePayLoaded() {
     .catch(e => console.log(e));
 }
 
-const shippingOptionParameters = {
-  shippingOptions: [
-    {
-      id: "shipping-001",
-      label: "$1.99: Standard shipping",
-      description: "Delivered on May 15."
-    },
-    {
-      id: "shipping-002",
-      label: "$3.99: Expedited shipping",
-      description: "Delivered on May 12."
-    },
-    {
-      id: "shipping-003",
-      label: "$10: Express shipping",
-      description: "Delivered tomorrow."
-    }
-  ]
-};
-
-// Shipping surcharges mapped to the IDs above.
-const shippingSurcharges = {
-  "shipping-001": 1.99,
-  "shipping-002": 3.99,
-  "shipping-003": 10
-};
-
 /**
  * Handles the creation of the button to pay with Google Pay.
  * Once created, this button is appended to the DOM, under the element
@@ -167,7 +175,7 @@ function createAndAddButton() {
   // Using Native Payment Request
   document
     .getElementById("buy-now-pr")
-    .addEventListener("click", onBuyPRClicked);
+    .addEventListener("click", onBuyWithPRClicked);
 }
 
 function getPaymentDataNoTransaction(dynamic_update = true) {
@@ -194,12 +202,6 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
     }
   };
 
-  // 3. Add information about the merchant.
-  const merchantInfo = {
-    // merchantId: '01234567890123456789', Only in PRODUCTION
-    merchantName: "Rouslan Solomakhin",
-    merchantId: "00184145120947117657"
-  };
   const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
     allowedPaymentMethods: [cardPaymentMethod],
     transactionInfo: {
@@ -224,12 +226,6 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
   return paymentDataRequest;
 }
 
-// 2. Add information about the transaction.
-const transactionInfo = {
-  totalPriceStatus: "FINAL",
-  totalPrice: "123.45",
-  currencyCode: "USD"
-};
 /**
  * Handles the click of the button to pay with Google Pay. Takes
  * care of defining the payment data request to be used in order to load
@@ -253,12 +249,9 @@ function onGooglePaymentsButtonClicked() {
 }
 
 /**
- * Handles the click of the button to pay with Google Pay with PR. Takes
- * care of defining the payment data request to be used in order to load
- * the payments methods available to the user.
+ * Handles the click of the button to pay with Google Pay with PR.
  */
-
-function onBuyPRClicked() {
+function onBuyWithPRClicked() {
   let request = null;
   const gPay = {
     supportedMethods: "https://google.com/pay",
@@ -291,7 +284,7 @@ function onBuyPRClicked() {
         currency: "USD",
         value: "100.00"
       }
-    },
+    }
     // shippingOptions: prShippingOptions
   };
   // console.log(JSON.stringify(details, null, 2));
