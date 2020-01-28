@@ -164,7 +164,7 @@ function createAndAddButton() {
   googlePayButton.setAttribute("id", "google-pay-button");
   document.getElementById("buy-now").appendChild(googlePayButton);
 
-  //
+  // Using Native Payment Request
   document
     .getElementById("buy-now-pr")
     .addEventListener("click", onBuyPRClicked);
@@ -184,12 +184,12 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
     type: "CARD",
     tokenizationSpecification: tokenizationSpecification,
     parameters: {
-      allowedCardNetworks: ["VISA", "MASTERCARD"],
-      allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+      allowedCardNetworks: allowedNetworks,
+      allowedAuthMethods: allowedAuthMethods,
       billingAddressRequired: true,
       billingAddressParameters: {
         format: "FULL",
-        phoneNumberRequired: true
+        phoneNumberRequired: false
       }
     }
   };
@@ -269,10 +269,11 @@ function onBuyPRClicked() {
   const basicCard = {
     supportedMethods: "basic-card",
     data: {
-      supportedNetworks: ["visa", "master", "jcb"],
+      supportedNetworks: allowedNetworks,
       supportedTypes: ["credit", "debit", "prepaid"]
     }
   };
+  // Shipping Options format is different between pay.js and Payment Request.
   const prShippingOptions = shippingOptionParameters.shippingOptions.map(x => {
     return {
       amount: {
@@ -290,10 +291,10 @@ function onBuyPRClicked() {
         currency: "USD",
         value: "100.00"
       }
-    }
+    },
     shippingOptions: prShippingOptions
   };
-  console.log(JSON.stringify(details, null, 2));
+  // console.log(JSON.stringify(details, null, 2));
   request = new PaymentRequest([basicCard, gPay], details, {
     requestShipping: true
   });
