@@ -313,11 +313,12 @@ function onBuyPRClicked() {
   } catch (e) {
     console.log("Developer mistake: '" + e + "'");
   }
+  /*
   request.onshippingaddresschange = ev => {
     console.log(ev);
     return;
     ev.updateWith(details);
-  };
+  };*/
   request.onshippingoptionchange = ev => {
     console.log(ev);
     const newDetails = JSON.parse(JSON.stringify(details));
