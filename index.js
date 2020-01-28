@@ -54,17 +54,17 @@ const shippingOptionParameters = {
   shippingOptions: [
     {
       id: "shipping-001",
-      label: "$1.99: Standard shipping",
+      label: "$0.01: Standard shipping",
       description: "Delivered on May 15."
     },
     {
       id: "shipping-002",
-      label: "$2.99: Expedited shipping",
+      label: "$0.05: Expedited shipping",
       description: "Delivered on May 12."
     },
     {
       id: "shipping-003",
-      label: "$3.99: Express shipping",
+      label: "$0.50: Express shipping",
       description: "Delivered tomorrow."
     }
   ]
@@ -72,13 +72,13 @@ const shippingOptionParameters = {
 
 // Shipping surcharges mapped to the IDs above.
 const shippingSurcharges = {
-  "shipping-001": 1.99,
-  "shipping-002": 3.99,
-  "shipping-003": 10
+  "shipping-001": 0.01,
+  "shipping-002": 0.05,
+  "shipping-003": 0.50,
 };
 
 const transactionInfo = {
-  totalPriceStatus: "FINAL",
+  totalPriceStatus: "ESTIMATE",
   totalPrice: "1.00",
   currencyCode: "USD"
 };
@@ -91,12 +91,12 @@ const transactionInfo = {
  */
 let googlePayClient;
 
+// Called for dynamic update.
 function paymentDataCallback(callbackPayload) {
-  console.log("paymentDataCallback:");
-  console.log(callbackPayload);
+  // console.log("paymentDataCallback:", callbackPayload);
   const selectedShippingOptionId = callbackPayload.shippingOptionData.id;
   const shippingSurcharge = shippingSurcharges[selectedShippingOptionId];
-  const priceWithSurcharges = 123.45 + shippingSurcharge;
+  const priceWithSurcharges = Number(transactionInfo.totalPrice) + shippingSurcharge;
 
   return {
     newTransactionInfo: {
@@ -127,6 +127,54 @@ function paymentAuthorizedCallback(callbackPayload) {
   return {
     transactionState: "SUCCESS"
   };
+}
+
+function getPaymentDataNoTransaction(dynamic_update = true) {
+  // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
+  // 1. Update the card created before to include a tokenization spec and other parameters.
+  const tokenizationSpecification = {
+    type: "PAYMENT_GATEWAY",
+    parameters: {
+      gateway: "example",
+      gatewayMerchantId: "gatewayMerchantId"
+    }
+  };
+  const cardPaymentMethod = {
+    type: "CARD",
+    tokenizationSpecification: tokenizationSpecification,
+    parameters: {
+      allowedCardNetworks: allowedNetworks,
+      allowedAuthMethods: allowedAuthMethods,
+      billingAddressRequired: true,
+      billingAddressParameters: {
+        format: "FULL",
+        phoneNumberRequired: false
+      }
+    }
+  };
+
+  const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
+    allowedPaymentMethods: [cardPaymentMethod],
+    transactionInfo: {
+      totalPriceStatus: "NOT_CURRENTLY_KNOWN",
+      currencyCode: "USD"
+    },
+    merchantInfo: merchantInfo
+  });
+
+  if (!dynamic_update) return paymentDataRequest;
+
+  // Place inside of onGooglePaymentsButtonClicked()
+  paymentDataRequest.shippingAddressRequired = true;
+  paymentDataRequest.shippingOptionRequired = true;
+  paymentDataRequest.callbackIntents = [
+    "SHIPPING_OPTION",
+    "SHIPPING_ADDRESS",
+    "PAYMENT_AUTHORIZATION"
+  ];
+  paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
+
+  return paymentDataRequest;
 }
 
 /**
@@ -176,54 +224,6 @@ function createAndAddButton() {
   document
     .getElementById("buy-now-pr")
     .addEventListener("click", onBuyWithPRClicked);
-}
-
-function getPaymentDataNoTransaction(dynamic_update = true) {
-  // TODO: Launch the payments sheet using the loadPaymentData method in the payments client:
-  // 1. Update the card created before to include a tokenization spec and other parameters.
-  const tokenizationSpecification = {
-    type: "PAYMENT_GATEWAY",
-    parameters: {
-      gateway: "example",
-      gatewayMerchantId: "gatewayMerchantId"
-    }
-  };
-  const cardPaymentMethod = {
-    type: "CARD",
-    tokenizationSpecification: tokenizationSpecification,
-    parameters: {
-      allowedCardNetworks: allowedNetworks,
-      allowedAuthMethods: allowedAuthMethods,
-      billingAddressRequired: true,
-      billingAddressParameters: {
-        format: "FULL",
-        phoneNumberRequired: false
-      }
-    }
-  };
-
-  const paymentDataRequest = Object.assign({}, googlePayBaseConfiguration, {
-    allowedPaymentMethods: [cardPaymentMethod],
-    transactionInfo: {
-      totalPriceStatus: "NOT_CURRENTLY_KNOWN",
-      currencyCode: "USD"
-    },
-    merchantInfo: merchantInfo
-  });
-
-  if (!dynamic_update) return paymentDataRequest;
-
-  // Place inside of onGooglePaymentsButtonClicked()
-  paymentDataRequest.shippingAddressRequired = true;
-  paymentDataRequest.shippingOptionRequired = true;
-  paymentDataRequest.callbackIntents = [
-    "SHIPPING_OPTION",
-    "SHIPPING_ADDRESS",
-    "PAYMENT_AUTHORIZATION"
-  ];
-  paymentDataRequest.shippingOptionParameters = shippingOptionParameters;
-
-  return paymentDataRequest;
 }
 
 /**
