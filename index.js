@@ -324,8 +324,10 @@ function onBuyPRClicked() {
   };
   request.onshippingoptionchange = ev => {
     console.log(ev);
-    const newDetails = Object.assign({}, details);
-    newDetails.total.amount.value += shippingSurcharges[ev.target.shippingOption];
+    const newDetails = JSON.parse(JSON.stringify(details));
+    let nValue = Number(newDetails.total.amount.value);
+    nValue += Number(shippingSurcharges[ev.target.shippingOption]);
+    newDetails.total.amount.value = nValue.toFixed(2);
     ev.updateWith(newDetails);
   };
 }
