@@ -232,7 +232,7 @@ function createAndAddButton() {
  * the payments methods available to the user.
  */
 function onGooglePaymentsButtonClicked() {
-  const paymentDataRequest = Object.assign(getPaymentDataNoTransaction(), {
+  const paymentDataRequest = Object.assign(getPaymentDataNoTransaction(true), {
     transactionInfo
   });
   console.log(paymentDataRequest);
@@ -282,14 +282,14 @@ function onBuyWithPRClicked() {
       label: "Totals",
       amount: {
         currency: "USD",
-        value: "100.00"
+        value: "2.00"
       }
-    }
-    // shippingOptions: prShippingOptions
+    },
+    shippingOptions: prShippingOptions
   };
   // console.log(JSON.stringify(details, null, 2));
-  request = new PaymentRequest([basicCard, gPay], details, {
-    // requestShipping: true
+  request = new PaymentRequest([basicCard, /*gPay*/], details, {
+    requestShipping: true
   });
   request.onshippingoptionchange = ev => {
     console.log(ev);
@@ -314,7 +314,7 @@ function onBuyWithPRClicked() {
         .canMakePayment()
         .then(function(result) {
           console.log(result ? "Can make payment" : "Cannot make payment");
-          console.dir(gPay);
+          // console.dir(gPay);
           request.show();
         })
         .catch(function(err) {
