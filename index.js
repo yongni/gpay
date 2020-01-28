@@ -290,19 +290,14 @@ function onBuyPRClicked() {
         currency: "USD",
         value: "100.00"
       }
-    },
+    }
     // shippingOptions: prShippingOptions
   };
   console.log(JSON.stringify(details, null, 2));
   try {
-    request = new PaymentRequest(
-      [
-        basicCard,
-        gPay,
-      ],
-      details,
-      {requestShipping: true}
-    );
+    request = new PaymentRequest([basicCard, gPay], details, {
+      requestShipping: true
+    });
     if (request.canMakePayment) {
       request
         .canMakePayment()
@@ -320,6 +315,7 @@ function onBuyPRClicked() {
   }
   request.onshippingaddresschange = ev => {
     console.log(ev);
+    return;
     ev.updateWith(details);
   };
   request.onshippingoptionchange = ev => {
