@@ -260,7 +260,7 @@ function onGooglePaymentsButtonClicked() {
 
 function onBuyPRClicked() {
   let request = null;
-  const supportedInstrument = {
+  const gPay = {
     supportedMethods: "https://google.com/pay",
     data: Object.assign(getPaymentDataNoTransaction(false), {
       transactionInfo
@@ -273,12 +273,12 @@ function onBuyPRClicked() {
       supportedTypes: ["credit", "debit", "prepaid"]
     }
   };
-  const prShippingOptions = shippingOptionParameters.shippingOptions.map(
-    x => { amount: shippingSurcharges[x.id],  }
-  );
+  const prShippingOptions = shippingOptionParameters.shippingOptions.map(x => {
+    return { amount: shippingSurcharges[x.id], id: x.id, label: x.label };
+  });
   const details = {
     total: {
-      label: "Tots",
+      label: "Totals",
       amount: {
         currency: "USD",
         value: "1.00"
@@ -288,13 +288,13 @@ function onBuyPRClicked() {
   };
   console.log(details);
   try {
-    request = new PaymentRequest([basicCard, supportedInstrument], details);
+    request = new PaymentRequest([basicCard, /*gPay*/], details);
     if (request.canMakePayment) {
       request
         .canMakePayment()
         .then(function(result) {
           console.log(result ? "Can make payment" : "Cannot make payment");
-          console.dir(supportedInstrument);
+          console.dir(gPay);
           request.show();
         })
         .catch(function(err) {
