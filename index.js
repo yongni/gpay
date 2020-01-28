@@ -288,7 +288,7 @@ function onBuyPRClicked() {
       label: "Totals",
       amount: {
         currency: "USD",
-        value: "1.00"
+        value: "100.00"
       }
     },
     shippingOptions: prShippingOptions
@@ -320,9 +320,13 @@ function onBuyPRClicked() {
   }
   request.onshippingaddresschange = ev => {
     console.log(ev);
+    ev.updateWith(details);
   };
   request.onshippingoptionchange = ev => {
     console.log(ev);
+    const newDetail = Object.assign({}, details);
+    newDetail.total.amount.value += 
+    ev.updateWith(Object.assign({}, details));
   };
 }
 
