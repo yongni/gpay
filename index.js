@@ -273,7 +273,8 @@ function onBuyPRClicked() {
       supportedTypes: ["credit", "debit", "prepaid"]
     }
   };
-  const prShippingOptions = shippingOptionParameters.map(
+  const prShippingOptions = shippingOptionParameters.shippingOptions.map(
+    x => { amount: shippingSurcharges[x.id],  }
   );
   const details = {
     total: {
@@ -283,8 +284,9 @@ function onBuyPRClicked() {
         value: "1.00"
       }
     },
-    shippingOptions: prShippingOptions,
+    shippingOptions: prShippingOptions
   };
+  console.log(details);
   try {
     request = new PaymentRequest([basicCard, supportedInstrument], details);
     if (request.canMakePayment) {
