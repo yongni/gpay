@@ -295,10 +295,13 @@ function onBuyPRClicked() {
   };
   console.log(details);
   try {
-    request = new PaymentRequest([
-      basicCard,
-      // gPay,
-    ], details);
+    request = new PaymentRequest(
+      [
+        basicCard
+        // gPay,
+      ],
+      details
+    );
     if (request.canMakePayment) {
       request
         .canMakePayment()
@@ -314,6 +317,9 @@ function onBuyPRClicked() {
   } catch (e) {
     console.log("Developer mistake: '" + e + "'");
   }
+  request.onshippingaddresschange = ev => {
+    console.log(ev);
+  };
 }
 
 function processPayment(paymentData) {
