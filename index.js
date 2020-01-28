@@ -294,10 +294,25 @@ function onBuyPRClicked() {
     // shippingOptions: prShippingOptions
   };
   console.log(JSON.stringify(details, null, 2));
+  request = new PaymentRequest([basicCard, gPay], details, {
+    requestShipping: true
+  });
+  request.onshippingoptionchange = ev => {
+    console.log(ev);
+    const newDetails = JSON.parse(JSON.stringify(details));
+    let nValue = Number(newDetails.total.amount.value);
+    nValue += Number(shippingSurcharges[ev.target.shippingOption]);
+    newDetails.total.amount.value = nValue.toFixed(2);
+    ev.updateWith(newDetails);
+  };
+  request.addEventListener("shippingaddresschange", evt => {
+    evt.updateWith(
+      new Promise(resolve => {
+        resolve(JSON.parse(JSON.stringify(details)));
+      })
+    );
+  });
   try {
-    request = new PaymentRequest([basicCard, gPay], details, {
-      requestShipping: true
-    });
     if (request.canMakePayment) {
       request
         .canMakePayment()
@@ -313,20 +328,6 @@ function onBuyPRClicked() {
   } catch (e) {
     console.log("Developer mistake: '" + e + "'");
   }
-  /*
-  request.onshippingaddresschange = ev => {
-    console.log(ev);
-    return;
-    ev.updateWith(details);
-  };*/
-  request.onshippingoptionchange = ev => {
-    console.log(ev);
-    const newDetails = JSON.parse(JSON.stringify(details));
-    let nValue = Number(newDetails.total.amount.value);
-    nValue += Number(shippingSurcharges[ev.target.shippingOption]);
-    newDetails.total.amount.value = nValue.toFixed(2);
-    ev.updateWith(newDetails);
-  };
 }
 
 function processPayment(paymentData) {
