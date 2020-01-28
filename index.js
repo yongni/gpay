@@ -292,11 +292,11 @@ function onBuyPRClicked() {
         value: "100.00"
       }
     },
-    shippingOptions: prShippingOptions
+    // shippingOptions: prShippingOptions
   };
   // console.log(JSON.stringify(details, null, 2));
   request = new PaymentRequest([basicCard, gPay], details, {
-    requestShipping: true
+    // requestShipping: true
   });
   request.onshippingoptionchange = ev => {
     console.log(ev);
@@ -306,6 +306,7 @@ function onBuyPRClicked() {
     newDetails.total.amount.value = nValue.toFixed(2);
     ev.updateWith(newDetails);
   };
+  /*
   request.addEventListener("shippingaddresschange", evt => {
     evt.updateWith(
       new Promise(resolve => {
@@ -313,6 +314,7 @@ function onBuyPRClicked() {
       })
     );
   });
+  */
   try {
     if (request.canMakePayment) {
       request
