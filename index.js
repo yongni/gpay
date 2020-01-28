@@ -297,8 +297,8 @@ function onBuyPRClicked() {
   try {
     request = new PaymentRequest(
       [
-        //basicCard
-        gPay,
+        basicCard
+        // gPay,
       ],
       details,
       {requestShipping: true}
