@@ -274,7 +274,14 @@ function onBuyPRClicked() {
     }
   };
   const prShippingOptions = shippingOptionParameters.shippingOptions.map(x => {
-    return { amount: shippingSurcharges[x.id], id: x.id, label: x.label };
+    return {
+      amount: {
+        value: shippingSurcharges[x.id],
+        currency: "USD"
+      },
+      id: x.id,
+      label: x.label
+    };
   });
   const details = {
     total: {
@@ -288,7 +295,10 @@ function onBuyPRClicked() {
   };
   console.log(details);
   try {
-    request = new PaymentRequest([basicCard, /*gPay*/], details);
+    request = new PaymentRequest([
+      basicCard,
+      // gPay,
+    ], details);
     if (request.canMakePayment) {
       request
         .canMakePayment()
