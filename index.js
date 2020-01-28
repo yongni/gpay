@@ -78,7 +78,7 @@ const shippingSurcharges = {
 };
 
 const transactionInfo = {
-  totalPriceStatus: "ESTIMATE",
+  totalPriceStatus: "ESTIMATED",
   totalPrice: "1.00",
   currencyCode: "USD"
 };
@@ -288,7 +288,7 @@ function onBuyWithPRClicked() {
     shippingOptions: prShippingOptions
   };
   // console.log(JSON.stringify(details, null, 2));
-  request = new PaymentRequest([basicCard, /*gPay*/], details, {
+  request = new PaymentRequest([basicCard, gPay], details, {
     requestShipping: true
   });
   request.onshippingoptionchange = ev => {
