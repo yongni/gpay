@@ -291,7 +291,7 @@ function onBuyPRClicked() {
         value: "100.00"
       }
     }
-    // shippingOptions: prShippingOptions
+    shippingOptions: prShippingOptions
   };
   console.log(JSON.stringify(details, null, 2));
   request = new PaymentRequest([basicCard, gPay], details, {
