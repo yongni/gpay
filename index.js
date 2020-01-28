@@ -273,6 +273,8 @@ function onBuyPRClicked() {
       supportedTypes: ["credit", "debit", "prepaid"]
     }
   };
+  const prShippingOptions = shippingOptionParameters.map(
+  );
   const details = {
     total: {
       label: "Tots",
@@ -280,7 +282,8 @@ function onBuyPRClicked() {
         currency: "USD",
         value: "1.00"
       }
-    }
+    },
+    shippingOptions: prShippingOptions,
   };
   try {
     request = new PaymentRequest([basicCard, supportedInstrument], details);
