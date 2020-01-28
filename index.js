@@ -293,14 +293,15 @@ function onBuyPRClicked() {
     },
     shippingOptions: prShippingOptions
   };
-  console.log(details);
+  console.log(JSON.stringify(details, null, 2));
   try {
     request = new PaymentRequest(
       [
-        basicCard
-        // gPay,
+        //basicCard
+        gPay,
       ],
-      details
+      details,
+      {requestShipping: true}
     );
     if (request.canMakePayment) {
       request
@@ -318,6 +319,9 @@ function onBuyPRClicked() {
     console.log("Developer mistake: '" + e + "'");
   }
   request.onshippingaddresschange = ev => {
+    console.log(ev);
+  };
+  request.onshippingoptionchange = ev => {
     console.log(ev);
   };
 }
