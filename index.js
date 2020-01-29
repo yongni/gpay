@@ -268,7 +268,7 @@ function onBuyWithPRClicked() {
     }
   };
   // Shipping Options format is different between pay.js and Payment Request.
-  const prShippingOptions = shippingOptionParameters.shippingOptions.map(x => {
+  const shippingOptions = shippingOptionParameters.shippingOptions.map(x => {
     return {
       amount: {
         value: shippingSurcharges[x.id],
@@ -279,6 +279,7 @@ function onBuyWithPRClicked() {
       selected: false
     };
   });
+  shippingOptions[1].selected = true;
   const details = {
     total: {
       label: "Totals",
@@ -287,7 +288,7 @@ function onBuyWithPRClicked() {
         value: "2.00"
       }
     },
-    shippingOptions: prShippingOptions
+    shippingOptions
   };
   // console.log(JSON.stringify(details, null, 2));
   request = new PaymentRequest([basicCard, gPay], details, {
@@ -300,7 +301,7 @@ function onBuyWithPRClicked() {
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
     newDetails.shippingOptions.forEach(
-      x => {if (x.id == ev.target.shippingOption) x.selected = true;}
+      x => {x.selected = (x.id == ev.target.shippingOption);}
     );
     ev.updateWith(newDetails);
   };
