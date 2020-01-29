@@ -74,7 +74,7 @@ const shippingOptionParameters = {
 const shippingSurcharges = {
   "shipping-001": 0.01,
   "shipping-002": 0.05,
-  "shipping-003": 0.50,
+  "shipping-003": 0.5
 };
 
 const transactionInfo = {
@@ -96,7 +96,8 @@ function paymentDataCallback(callbackPayload) {
   // console.log("paymentDataCallback:", callbackPayload);
   const selectedShippingOptionId = callbackPayload.shippingOptionData.id;
   const shippingSurcharge = shippingSurcharges[selectedShippingOptionId];
-  const priceWithSurcharges = Number(transactionInfo.totalPrice) + shippingSurcharge;
+  const priceWithSurcharges =
+    Number(transactionInfo.totalPrice) + shippingSurcharge;
 
   return {
     newTransactionInfo: {
@@ -291,23 +292,21 @@ function onBuyWithPRClicked() {
   request = new PaymentRequest([basicCard, gPay], details, {
     requestShipping: true
   });
-  request.onshippingoptionchange = ev => {
+  request.addEventListener("shippingoptionchange", ev => {
+    ev.updateWith(new Promise(resolve => resolve(details)));
+    /*
     console.log(ev);
     const newDetails = JSON.parse(JSON.stringify(details));
     let nValue = Number(newDetails.total.amount.value);
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
     ev.updateWith(newDetails);
-  };
-  /*
-  request.addEventListener("shippingaddresschange", evt => {
-    evt.updateWith(
-      new Promise(resolve => {
-        resolve(JSON.parse(JSON.stringify(details)));
-      })
-    );
+    */
   });
-  */
+  request.addEventListener("shippingaddresschange", evt =>
+    evt.updateWith(new Promise(resolve => resolve(details)))
+  );
+  /* */
   try {
     if (request.canMakePayment) {
       request
