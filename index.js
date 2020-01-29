@@ -293,20 +293,16 @@ function onBuyWithPRClicked() {
     requestShipping: true
   });
   request.addEventListener("shippingoptionchange", ev => {
-    ev.updateWith(new Promise(resolve => resolve(details)));
-    /*
     console.log(ev);
     const newDetails = JSON.parse(JSON.stringify(details));
     let nValue = Number(newDetails.total.amount.value);
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
+    newDetails.shippingOptions.
     ev.updateWith(newDetails);
-    */
   });
-  request.addEventListener("shippingaddresschange", evt =>
-    evt.updateWith(new Promise(resolve => resolve(details)))
-  );
-  /* */
+  request.onshippingaddresschange = evt =>
+    evt.updateWith(details);
   try {
     if (request.canMakePayment) {
       request
