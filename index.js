@@ -275,7 +275,8 @@ function onBuyWithPRClicked() {
         currency: "USD"
       },
       id: x.id,
-      label: x.label
+      label: x.label,
+      selected: false
     };
   });
   const details = {
@@ -292,15 +293,17 @@ function onBuyWithPRClicked() {
   request = new PaymentRequest([basicCard, gPay], details, {
     requestShipping: true
   });
-  request.addEventListener("shippingoptionchange", ev => {
+  request.onshippingoptionchange = ev => {
     console.log(ev);
     const newDetails = JSON.parse(JSON.stringify(details));
     let nValue = Number(newDetails.total.amount.value);
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
-    newDetails.shippingOptions.
+    newDetails.shippingOptions.forEach(
+      x => {if (x.id == ev.target.shippingOption) x.selected = true;}
+    );
     ev.updateWith(newDetails);
-  });
+  };
   request.onshippingaddresschange = evt =>
     evt.updateWith(details);
   try {
