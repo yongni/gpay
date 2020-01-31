@@ -184,6 +184,13 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
  * finished loading.
  */
 function onGooglePayLoaded() {
+  // Native Payment Request, not through pay.js.
+  document
+    .getElementById("buy-now-pr")
+    .addEventListener("click", onBuyWithPRClicked);
+
+  // GPay button and Popup.
+  
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
@@ -220,11 +227,6 @@ function createAndAddButton() {
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
   document.getElementById("buy-now").appendChild(googlePayButton);
-
-  // Using Native Payment Request
-  document
-    .getElementById("buy-now-pr")
-    .addEventListener("click", onBuyWithPRClicked);
 }
 
 /**
