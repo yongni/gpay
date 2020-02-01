@@ -250,10 +250,12 @@ function onGooglePaymentsButtonClicked() {
 }
 
 function mayEnablePRButton(ele) {
-  const request = nnew PaymentRequest(getPRMethods(), getPRDetails(), {
+  const request = new PaymentRequest(getPRMethods(), getPRDetails(), {
     requestShipping: true
   });
-  
+  request.hasEnrolledInstrument().then(cardOnFile => 
+                                      ele.innerHTML = cardOnFile?)
+  ele.innerHTML = ''
   ele.addEventListener("click", onBuyWithPRClicked); 
 }
 
