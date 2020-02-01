@@ -185,9 +185,7 @@ function getPaymentDataNoTransaction(dynamic_update = true) {
  */
 function onGooglePayLoaded() {
   // Native Payment Request, not through pay.js.
-  document
-    .getElementById("buy-now-pr")
-    .addEventListener("click", onBuyWithPRClicked);
+  mayEnablePRButton(document.getElementById("buy-now-pr"));
 
   // GPay button and Popup.
   
@@ -227,6 +225,11 @@ function createAndAddButton() {
   // TODO: Add the button to the DOM
   googlePayButton.setAttribute("id", "google-pay-button");
   document.getElementById("buy-now").appendChild(googlePayButton);
+}
+
+function mayEnablePRButton() {
+
+    .addEventListener("click", onBuyWithPRClicked);
 }
 
 /**
