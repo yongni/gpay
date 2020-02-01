@@ -227,11 +227,6 @@ function createAndAddButton() {
   document.getElementById("buy-now").appendChild(googlePayButton);
 }
 
-function mayEnablePRButton() {
-
-    .addEventListener("click", onBuyWithPRClicked);
-}
-
 /**
  * Handles the click of the button to pay with Google Pay. Takes
  * care of defining the payment data request to be used in order to load
@@ -254,17 +249,6 @@ function onGooglePaymentsButtonClicked() {
     });
 }
 
-/**
- * Handles the click of the button to pay with Google Pay with PR.
- */
-function onBuyWithPRClicked() {
-  let request = null;
-  const gPay = {
-    supportedMethods: "https://google.com/pay",
-    data: Object.assign(getPaymentDataNoTransaction(false), {
-      transactionInfo
-    })
-  };
   const basicCard = {
     supportedMethods: "basic-card",
     data: {
@@ -272,6 +256,31 @@ function onBuyWithPRClicked() {
       supportedTypes: ["credit", "debit", "prepaid"]
     }
   };
+
+  const gPay = {
+    supportedMethods: "https://google.com/pay",
+    data: Object.assign(getPaymentDataNoTransaction(false), {
+      transactionInfo
+    })
+  };
+
+function mayEnablePRButton(ele) {
+  const request = new PaymentRequest([basicCard, gPay], details, {
+    requestShipping: true
+  });
+  
+  ele
+    .addEventListener("click", onBuyWithPRClicked);
+  
+}
+
+/**
+ * Handles the click of the button to pay with Google Pay with PR.
+ */
+function getPaymentRequest() {
+  let request = null;
+
+
   // Shipping Options format is different between pay.js and Payment Request.
   const shippingOptions = shippingOptionParameters.shippingOptions.map(x => {
     return {
@@ -295,6 +304,8 @@ function onBuyWithPRClicked() {
     },
     shippingOptions
   };
+}
+  function onBuyWithPRClicked() {
   // console.log(JSON.stringify(details, null, 2));
   request = new PaymentRequest([basicCard, gPay], details, {
     requestShipping: true
