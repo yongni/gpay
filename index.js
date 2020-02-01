@@ -188,7 +188,7 @@ function onGooglePayLoaded() {
   mayEnablePRButton(document.getElementById("buy-now-pr"));
 
   // GPay button and Popup.
-  
+
   // Initialize the client and determine readiness to pay with Google Pay:
   // 1. Instantiate the client using the 'TEST' environment.
   googlePayClient = new google.payments.api.PaymentsClient({
@@ -253,17 +253,17 @@ function mayEnablePRButton(ele) {
   const request = new PaymentRequest(getPRMethods(), getPRDetails(), {
     requestShipping: true
   });
-  request.hasEnrolledInstrument().then(cardOnFile => 
-                                      ele.innerHTML = cardOnFile?)
-  ele.innerHTML = ''
-  ele.addEventListener("click", onBuyWithPRClicked); 
+  request
+    .hasEnrolledInstrument()
+    .then(cardOnFile => (ele.innerHTML = `PaymentRequest Card ${cardOnFile}`));
+  ele.addEventListener("click", onBuyWithPRClicked);
 }
 
 /**
  * Handles the click of the button to pay with Google Pay with PR.
  */
 function getPRMethods() {
-    const basicCard = {
+  const basicCard = {
     supportedMethods: "basic-card",
     data: {
       supportedNetworks: allowedNetworks,
@@ -278,7 +278,6 @@ function getPRMethods() {
     })
   };
   return [basicCard, gPay];
-  
 }
 function getPRDetails() {
   // Shipping Options format is different between pay.js and Payment Request.
@@ -307,8 +306,8 @@ function getPRDetails() {
   // console.log(JSON.stringify(details, null, 2));
   return details;
 }
-  function onBuyWithPRClicked() {
-  const request =  new PaymentRequest(getPRMethods(), getPRDetails(), {
+function onBuyWithPRClicked() {
+  const request = new PaymentRequest(getPRMethods(), getPRDetails(), {
     requestShipping: true
   });
   request.onshippingoptionchange = ev => {
@@ -317,13 +316,12 @@ function getPRDetails() {
     let nValue = Number(newDetails.total.amount.value);
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
-    newDetails.shippingOptions.forEach(
-      x => {x.selected = (x.id == ev.target.shippingOption);}
-    );
+    newDetails.shippingOptions.forEach(x => {
+      x.selected = x.id == ev.target.shippingOption;
+    });
     ev.updateWith(newDetails);
   };
-  request.onshippingaddresschange = evt =>
-    evt.updateWith(getPRDetails());
+  request.onshippingaddresschange = evt => evt.updateWith(getPRDetails());
   try {
     if (request.canMakePayment) {
       request
