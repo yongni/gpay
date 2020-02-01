@@ -249,7 +249,19 @@ function onGooglePaymentsButtonClicked() {
     });
 }
 
-  const basicCard = {
+function mayEnablePRButton(ele) {
+  const request = nnew PaymentRequest(getPRMethods(), getPRDetails(), {
+    requestShipping: true
+  });
+  
+  ele.addEventListener("click", onBuyWithPRClicked); 
+}
+
+/**
+ * Handles the click of the button to pay with Google Pay with PR.
+ */
+function getPRMethods() {
+    const basicCard = {
     supportedMethods: "basic-card",
     data: {
       supportedNetworks: allowedNetworks,
@@ -263,24 +275,10 @@ function onGooglePaymentsButtonClicked() {
       transactionInfo
     })
   };
-
-function mayEnablePRButton(ele) {
-  const request = new PaymentRequest([basicCard, gPay], details, {
-    requestShipping: true
-  });
-  
-  ele
-    .addEventListener("click", onBuyWithPRClicked);
+  return [basicCard, gPay];
   
 }
-
-/**
- * Handles the click of the button to pay with Google Pay with PR.
- */
-function getPaymentRequest() {
-  let request = null;
-
-
+function getPRDetails() {
   // Shipping Options format is different between pay.js and Payment Request.
   const shippingOptions = shippingOptionParameters.shippingOptions.map(x => {
     return {
@@ -304,15 +302,16 @@ function getPaymentRequest() {
     },
     shippingOptions
   };
+  // console.log(JSON.stringify(details, null, 2));
+  return details;
 }
   function onBuyWithPRClicked() {
-  // console.log(JSON.stringify(details, null, 2));
-  request = new PaymentRequest([basicCard, gPay], details, {
+  const request =  new PaymentRequest(getPRMethods(), getPRDetails(), {
     requestShipping: true
   });
   request.onshippingoptionchange = ev => {
     console.log(ev);
-    const newDetails = JSON.parse(JSON.stringify(details));
+    const newDetails = getPRDetails();
     let nValue = Number(newDetails.total.amount.value);
     nValue += Number(shippingSurcharges[ev.target.shippingOption]);
     newDetails.total.amount.value = nValue.toFixed(2);
@@ -322,7 +321,7 @@ function getPaymentRequest() {
     ev.updateWith(newDetails);
   };
   request.onshippingaddresschange = evt =>
-    evt.updateWith(details);
+    evt.updateWith(getPRDetails());
   try {
     if (request.canMakePayment) {
       request
